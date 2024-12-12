@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Detalles Mesa
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Mesas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-card>
+      <ion-card-header>
+        <h1>Detalles</h1>
+      </ion-card-header>
+      <ion-card-content>
+        <img [src]="item.imagen" width="100px" alt="Imagen" />
+        <p>Hora de Inicio: {{ item.inicio }}</p>
+        <p>Precio por Minuto: ${{ item.precio }}</p>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
+</ion-content>

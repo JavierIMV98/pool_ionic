@@ -7,7 +7,7 @@ import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angu
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   standalone: true,
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonLabel],
 })
 export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);

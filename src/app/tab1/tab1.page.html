@@ -12,6 +12,14 @@
       <ion-title size="large">Mesas</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  
+  <ion-content>
+    <ng-container *ngFor="let item of items">
+      <app-card-mesa
+        [imagen]="item.imagen"
+        [inicio]="item.inicio"
+        [precio]="item.precio"
+        (click)="goToDetails(item)">
+      </app-card-mesa>
+    </ng-container>
+  </ion-content>
 </ion-content>
