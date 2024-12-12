@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonGrid, IonRow, IonCol, IonButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonGrid, IonRow, IonCol, IonButton, IonModal } from '@ionic/angular/standalone';
 import { CardMesaComponent } from '../card-mesa/card-mesa.component';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgFor } from '@angular/common';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { ModalCrearMesaComponent } from '../modal-crear-mesa/modal-crear-mesa.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { ModalCrearMesaComponent } from '../modal-crear-mesa/modal-crear-mesa.co
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent,CardMesaComponent,NgFor, ModalCrearMesaComponent ],
+  imports: [IonModal, IonButton, IonHeader, IonToolbar, IonTitle, IonContent,CardMesaComponent,NgFor, ModalCrearMesaComponent ],
   providers: [ModalController]
 })
 export class Tab1Page {
