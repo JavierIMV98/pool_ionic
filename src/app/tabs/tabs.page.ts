@@ -1,7 +1,6 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { triangle, ellipse, square } from 'ionicons/icons';
+
 
 @Component({
   selector: 'app-tabs',
@@ -12,8 +11,27 @@ import { triangle, ellipse, square } from 'ionicons/icons';
 })
 export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
-
-  constructor() {
-    addIcons({ triangle, ellipse, square });
+  test1 = "";
+  test2="filtro-bn";
+  test3="filtro-bn"
+  clickHistorial() {
+    this.test1 = "filtro-bn";
+    this.test2 = "filtro-bn";
+    this.test3 = "";
   }
+
+  clickCliente() {
+    this.test1 = "filtro-bn";
+    this.test2 = "";
+    this.test3 = "filtro-bn";
+  }
+  clickMesa() {
+    this.test1 = "";
+    this.test2 = "filtro-bn";
+    this.test3 = "filtro-bn";
+  }
+  constructor() {
+    
+  }
+
 }
