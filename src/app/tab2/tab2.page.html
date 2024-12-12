@@ -13,5 +13,33 @@
     </ion-toolbar>
   </ion-header>
 
-  
+  <div style="border-bottom:solid 1px lightgray;margin-bottom: 20px;">
+    <ion-button (click)="createOpenDatabase()" size="small">Create Open Database</ion-button>
+
+    <ion-button (click)="createTable()" size="small">Create Table</ion-button>
+
+    <ion-button (click)="updateRegistro()" size="small">Update</ion-button>
+
+    <ion-button (click)="deleteRegistro()" size="small">Delete</ion-button>
+  </div>
+  <div style="border-bottom:solid 1px lightgray;margin-bottom: 20px;">
+    <ion-item>
+      <ion-input placeholder="Nombre cliente" [(ngModel)]="client_name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Deuda cliente" [(ngModel)]="client_deuda"></ion-input>
+    </ion-item>
+    <button class="btn btn-success" (click)="insertData()">Insertar Datos</button>
+  </div>
+
+  <div style="border-bottom:solid 1px lightgray;margin-bottom: 20px;">
+    <ion-button (click)="selectData()" size="small">SelectData</ion-button>
+    <ion-button (click)="selectDataCondition()" size="small">SelectData Condition</ion-button>
+    <div *ngFor = "let c of clientData; let i = index">
+      <div>client name: {{c.client_name}}</div>
+      <div>client deuda: {{c.client_deuda}}</div>
+
+    </div>
+
+  </div>
 </ion-content>
