@@ -16,13 +16,13 @@
       <ion-button expand="block" (click)="openModalCrearMesa()">Crear Mesa!</ion-button>
       <ion-modal></ion-modal>
       <p>{{ message }}</p>
-    <ng-container *ngFor="let item of items">
-      <app-card-mesa
-        [imagen]="item.imagen"
-        [inicio]="item.inicio"
-        [precio]="item.precio"
-        (click)="goToDetails(item)">
-      </app-card-mesa>
-    </ng-container>
+      <ng-container *ngFor="let mesa of mesas()">
+        <app-card-mesa
+          [imagen]="'assets/poolball' + mesa.numero.toString() + '.png'"
+          [inicio]="mesa.inicio"
+          [precio]="mesa.precio.toString()"
+          (click)="goToDetails(mesa)">
+        </app-card-mesa>
+      </ng-container>
   </ion-content>
 </ion-content>
