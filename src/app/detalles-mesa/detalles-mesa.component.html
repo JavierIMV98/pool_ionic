@@ -18,9 +18,10 @@
         <h1>Detalles</h1>
       </ion-card-header>
       <ion-card-content>
-        <img [src]="item.imagen" width="100px" alt="Imagen" />
+        <img [src]="'assets/poolball' +item.numero.toString()  + '.png'" width="100px" alt="Imagen" />
         <p>Hora de Inicio: {{ item.inicio }}</p>
         <p>Precio por Minuto: ${{ item.precio }}</p>
+        <p>Extras ${{ item.extras }}</p>
       </ion-card-content>
     </ion-card>
   </ion-content>
