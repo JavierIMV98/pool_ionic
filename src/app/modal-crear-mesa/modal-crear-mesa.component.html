@@ -1,3 +1,4 @@
+<!-- modal-crear-mesa.component.html -->
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -10,58 +11,40 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
+  <div>
+    <label for="numeroSelect">Número de Mesa:</label>
+    <select 
+      id="numeroSelect" 
+      class="form-select" 
+      [(ngModel)]="numero" 
+      (change)="onNumeroChange(getSelectValue($event))">
+      <option [value]="null" disabled selected>Seleccione un número</option>
+      <option *ngFor="let num of nrosdisponibles" [value]="num">
+        {{ num }}
+      </option>
+    </select>
+  </div>
 
-  <!-- Número de Mesa -->
   <ion-item>
-    <ion-label>Mesa: </ion-label>
-    <ion-picker
-      [value]="selectedMesa"
-      (ionChange)="onIonChange($event)"
-      text="Seleccionar">
-      <ion-picker-column >
-        <ion-picker-column-option value="1">1</ion-picker-column-option>
-        <ion-picker-column-option value="2">2</ion-picker-column-option>
-        <ion-picker-column-option value="3">3</ion-picker-column-option>
-        <ion-picker-column-option value="4">4</ion-picker-column-option>
-        <ion-picker-column-option value="5">5</ion-picker-column-option>
-        <ion-picker-column-option value="6">6</ion-picker-column-option>
-        <ion-picker-column-option value="7">7</ion-picker-column-option>
-        <ion-picker-column-option value="8">8</ion-picker-column-option>
-        <ion-picker-column-option value="9">9</ion-picker-column-option>
-        <ion-picker-column-option value="10">10</ion-picker-column-option>
-        <ion-picker-column-option value="11">11</ion-picker-column-option>
-        <ion-picker-column-option value="12">12</ion-picker-column-option>
-      </ion-picker-column>
-    </ion-picker>
-  </ion-item>
-  <!-- Hora -->
-  <ion-item>
-    <ion-label>Hora:  </ion-label>
-    <ion-datetime display-format="HH:mm" picker-format="HH:mm" presentation="time" [value]="selectedTime"
-    (ionChange)="onIonChange2($event)" [style.width]="'100%'"></ion-datetime>
+    <ion-label position="floating">Hora</ion-label>
+    <ion-input 
+      required="true" 
+      type="time" 
+      [(ngModel)]="selectedTime">
+    </ion-input>
   </ion-item>
 
-  <!-- Precio -->
-  <ion-item>
-    <ion-label>Valor:  </ion-label>
-    <ion-picker [value]="selectedTime"
-    (ionChange)="onIonChange3($event)"   text="Seleccionar">
-      <ion-picker-column>
-        <ion-picker-column-option value=75>75</ion-picker-column-option>
-        <ion-picker-column-option value=80>80</ion-picker-column-option>
-        <ion-picker-column-option value=85>85</ion-picker-column-option>
-        <ion-picker-column-option value=90>90</ion-picker-column-option>
-        <ion-picker-column-option value=92>92</ion-picker-column-option>
-        <ion-picker-column-option value=97>97</ion-picker-column-option>
-        <ion-picker-column-option value=100>100</ion-picker-column-option>
-        <ion-picker-column-option value=110>110</ion-picker-column-option>
-        <ion-picker-column-option value=113>113</ion-picker-column-option>
-        <ion-picker-column-option value=120>120</ion-picker-column-option>
-        <ion-picker-column-option value=125>125</ion-picker-column-option>
-        <ion-picker-column-option value=130>130</ion-picker-column-option>
-        <ion-picker-column-option value=135>135</ion-picker-column-option>
-      </ion-picker-column>
-    </ion-picker>
-  </ion-item>
+  <div>
+    <label for="precioSelect">Precio:</label>
+    <select 
+      id="precioSelect" 
+      class="form-select" 
+      [(ngModel)]="precio" 
+      (change)="onPrecioChange(getSelectValue($event))">
+      <option [value]="null" disabled selected>Seleccione precio</option>
+      <option *ngFor="let pre of prices" [value]="pre">
+        {{ pre }}
+      </option>
+    </select>
+  </div>
 </ion-content>
-

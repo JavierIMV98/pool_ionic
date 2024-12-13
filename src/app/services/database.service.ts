@@ -1,5 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { CapacitorSQLite, SQLiteConnection , SQLiteDBConnection} from '@capacitor-community/sqlite';
+import { BehaviorSubject } from 'rxjs';
 
 const DB_POOL = 'mydb';
 
@@ -22,12 +23,16 @@ export interface Cliente{
   providedIn: 'root'
 })
 export class DatabaseService {
+
+  private mesaCreatedSubject = new BehaviorSubject<void>(undefined);
+  mesaCreated = this.mesaCreatedSubject.asObservable();
+
   private sqlite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite);
   private db: SQLiteDBConnection;
   private mesas: WritableSignal<Mesa[]> = signal<Mesa[]>([]);
   private clientes: WritableSignal<Cliente[]> = signal<Cliente[]>([]);
   constructor() { }
-
+  private nrosdisponibles: number[];
 
   async initializPlugin(){
     this.db = await this.sqlite.createConnection(
@@ -43,10 +48,30 @@ export class DatabaseService {
     this.loadClientes();
     return true;
   }
-  async loadMesas(){
-    const mesas = await this.db.query('SELECT * FROM mesas')
-    this.mesas.set(mesas.values || []);
+  async loadMesas() {
+    const result = await this.db.query('SELECT numero FROM mesas');
+    const mesas = result.values || []; // Obtenemos los números de mesa ya ocupados
+    this.mesas.set(mesas);
+  
+    // Lista de todos los números de mesa (1 al 12)
+    const todosLosNumeros = Array.from({ length: 12 }, (_, i) => i + 1);
+  
+    // Filtramos los números disponibles restando los números ocupados
+    const ocupados = mesas.map((m: any) => m.numero); // Convertimos a un array de números
+    this.nrosdisponibles = todosLosNumeros.filter(numero => !ocupados.includes(numero));
+  
+    console.log('Números disponibles:', this.nrosdisponibles);
+  
+    // Actualizamos la señal con las mesas existentes
+
   }
+
+  getNrosDisp(){
+    return this.nrosdisponibles;
+  }
+  
+
+
   async loadClientes(){
     const clientes = await this.db.query('SELECT * FROM clientes')
     this.clientes.set(clientes.values || []);
@@ -111,3 +136,4 @@ export class DatabaseService {
     }
   
 }
+
