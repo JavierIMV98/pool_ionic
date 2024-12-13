@@ -22,7 +22,7 @@ export class ModalCrearMesaComponent  implements OnInit {
 
   objmesa: Mesa;
 
-  numero: number;
+  numero: number | null = null;
   inicio: string;
   precio: number = 0;
 
@@ -44,7 +44,7 @@ export class ModalCrearMesaComponent  implements OnInit {
 
   confirm() {
     // Verificar si todos los campos requeridos están llenos y no son null/undefined
-    if (this.numero !== undefined && this.selectedTime && this.precio !== undefined) {
+    if (this.numero && this.selectedTime && this.precio) {
       // Crear un nuevo objeto Mesa
       const nuevaMesa = {
         numero: this.numero,

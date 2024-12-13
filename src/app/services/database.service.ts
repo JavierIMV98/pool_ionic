@@ -1,6 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { CapacitorSQLite, SQLiteConnection , SQLiteDBConnection} from '@capacitor-community/sqlite';
-import { BehaviorSubject } from 'rxjs';
 
 const DB_POOL = 'mydb';
 
@@ -23,10 +22,6 @@ export interface Cliente{
   providedIn: 'root'
 })
 export class DatabaseService {
-
-  private mesaCreatedSubject = new BehaviorSubject<void>(undefined);
-  mesaCreated = this.mesaCreatedSubject.asObservable();
-
   private sqlite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite);
   private db: SQLiteDBConnection;
   private mesas: WritableSignal<Mesa[]> = signal<Mesa[]>([]);
