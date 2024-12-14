@@ -13,9 +13,11 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
+    <div class="mb-3">
       <ion-button expand="block" (click)="openModalCrearMesa()">Crear Mesas!</ion-button>
+    </div>
       <ion-modal></ion-modal>
-      <ng-container *ngFor="let mesa of mesas()">
+      <ng-container  *ngFor="let mesa of mesas()">
         <app-card-mesa
           [imagen]="'assets/poolball' + mesa.numero.toString() + '.png'"
           [inicio]="mesa.inicio"

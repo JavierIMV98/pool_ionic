@@ -1,0 +1,40 @@
+.bg-dark {
+    background-color: #121212 !important; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+  }
+  
+  .card {
+    background-color: #1e1e1e; /* Fondo de la tarjeta oscuro */
+    border-color: #333333; /* Borde más tenue */
+  }
+  
+  .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  .form-control {
+    background-color: #2c2c2c; /* Fondo oscuro del input */
+    color: #ffffff; /* Texto blanco */
+    border-color: #444444;
+    font-size: 23px; /* Borde tenue */
+  }
+  
+  .form-control:focus {
+    background-color: #333333; /* Fondo al enfocarse */
+    color: #ffffff;
+    border-color: #666666; /* Resalte */
+    box-shadow: none; /* Quitar el resalte predeterminado */
+  }
+  
+  .form-label {
+    background-color: #333333; /* Fondo al enfocarse */
+    color: #ffffff;
+    border-color: #666666; /* Resalte */
+    box-shadow: none; /* Quitar el resalte predeterminado */
+  }

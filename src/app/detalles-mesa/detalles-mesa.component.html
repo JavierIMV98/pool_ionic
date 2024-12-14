@@ -6,23 +6,67 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="container mt-4 bg-dark text-white">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Mesas</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
-    <ion-card>
-      <ion-card-header>
-        <h1>Detalles</h1>
-      </ion-card-header>
-      <ion-card-content>
-        <img [src]="'assets/poolball' +item.numero.toString()  + '.png'" width="100px" alt="Imagen" />
-        <p>Hora de Inicio: {{ item.inicio }}</p>
-        <p>Precio por Minuto: ${{ item.precio }}</p>
-        <p>Extras ${{ item.extras }}</p>
-      </ion-card-content>
-    </ion-card>
-  </ion-content>
+
+  <div class="card p-3 shadow">
+    <div class="text-center mb-3">
+      <img 
+        [src]="'assets/poolball' + item.numero.toString() + '.png'" 
+        class="img-fluid rounded-circle" 
+        width="150px" 
+        alt="Imagen de Mesa {{ item.numero }}" />
+    </div>
+
+    <form>
+      <!-- Hora de Inicio -->
+      <div class="mb-3">
+        <label for="inicio" class="form-label">Hora de Inicio</label>
+        <input 
+          type="time" 
+          class="form-control" 
+          id="inicio" 
+          [(ngModel)]="item.inicio" 
+          name="inicio" />
+      </div>
+
+      <!-- Precio por Minuto -->
+      <div class="mb-3">
+        <label for="precio" class="form-label">Precio por Minuto</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="precio" 
+          [(ngModel)]="item.precio" 
+          name="precio" />
+      </div>
+
+      <!-- Extras -->
+      <div class="mb-3">
+        <label for="extras" class="form-label">Extras</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="extras" 
+          [(ngModel)]="item.extras" 
+          name="extras" />
+      </div>
+
+      <!-- Botones -->
+      <div class="d-grid gap-2">
+        <button 
+          type="button" 
+          class="btn btn-primary p-3 mt-3 mb-3" 
+          (click)="onActualizar()">Actualizar</button>
+        <button 
+          type="button" 
+          class="btn btn-danger p-3" 
+          (click)="onEliminar()">Eliminar</button>
+      </div>
+    </form>
+  </div>
 </ion-content>
