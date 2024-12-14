@@ -13,27 +13,4 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Formulario para crear una nueva mesa -->
-  <ion-item>
-    <ion-label position="floating">Número</ion-label>
-    <ion-input type="number" [(ngModel)]="numero"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Hora</ion-label>
-    <ion-input [(ngModel)]="inicio"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Precio</ion-label>
-    <ion-input type="number" [(ngModel)]="precio"></ion-input>
-  </ion-item>
-
-  <ion-button (click)="createMesa()">Añadir Mesa</ion-button>
-
-  <ion-item *ngFor="let mesa of mesas">
-    <ion-label>
-      {{mesa.numero}} - {{mesa.inicio}} - ${{mesa.precio}}
-    </ion-label>
-  </ion-item>
 </ion-content>

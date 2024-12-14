@@ -45,21 +45,23 @@ export class DatabaseService {
     return true;
   }
   async loadMesas() {
-    const result = await this.db.query('SELECT numero FROM mesas');
-    const mesas = result.values || [];
+    try {
+      if (!this.db) {
+        throw new Error('La base de datos no está inicializada.');
+      }
 
-    
-  
-    // Lista de todos los números de mesa (1 al 12)
-    const todosLosNumeros = Array.from({ length: 12 }, (_, i) => i + 1);
-  
-    // Filtramos los números disponibles restando los números ocupados
-    const ocupados = mesas.map((m: any) => m.numero);
-    this.nrosdisponibles.set(todosLosNumeros.filter(numero => !ocupados.includes(numero)));
-  
-    console.log('Números disponibles:', this.nrosdisponibles());
+      const result = await this.db.query('SELECT * FROM mesas');
+      const mesas = result.values || [];
+
+      const todosLosNumeros = Array.from({ length: 12 }, (_, i) => i + 1);
+      const ocupados = mesas.map((m: any) => m.numero);
+      this.nrosdisponibles.set(todosLosNumeros.filter(numero => !ocupados.includes(numero)));
+
+      this.mesas.set(mesas);
+    } catch (error) {
+      console.error('Error al cargar las mesas:', error);
+    }
   }
-  
   getNrosDisp() {
     return this.nrosdisponibles.asReadonly();
   }
@@ -78,24 +80,32 @@ export class DatabaseService {
     return this.mesas();
   }
 
+  async iniciarDB(){
+
+  }
+
   //CRUD MESAS:
 
   async insertMesa(mesa: Mesa) {
     try {
-      const query = `INSERT INTO mesas (numero, inicio, precio, extras) VALUES (?, ?, ?, ?);`;
-      const values = [mesa.numero, mesa.inicio, mesa.precio, mesa.extras];
+      const query = `INSERT INTO mesas (numero, inicio, precio, extras) VALUES (?, ?, ?, ?) RETURNING *;;`;
+      const values = [Number(mesa.numero), mesa.inicio, Number(mesa.precio), mesa.extras];
       console.log('Ejecutando query:', query, 'con valores:', values);
   
       const result = await this.db.query(query, values);
   
-      console.log('Resultado de la inserción:', result);
+      console.log('Service Resultado de la inserción:', result);
+      console.log('Service mesa...', this.mesas);
   
       await this.loadMesas(); // Recargar las mesas después de la inserción
+      const verify = await this.db.query('SELECT * FROM mesas');
+console.log('Service: Estado actual de la tabla mesas:', verify.values);
       return result;
     } catch (error) {
       console.error('Error en insertMesa:', error);
       throw error;
     }
+    
   }
 
   async updateMesa(mesa: Mesa) {

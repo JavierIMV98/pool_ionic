@@ -22,7 +22,6 @@ export class Tab1Page {
   message : string = '';
 
 
-
   /* items = [
     { imagen: 'assets/poolball1.png', inicio: '14:00', precio: '90' },
     { imagen: 'assets/poolball2.png', inicio: '15:30', precio: '120' },
@@ -33,6 +32,8 @@ export class Tab1Page {
     this.router.navigate(['detalles-mesa'], { relativeTo: this.route, queryParams: mesa });
   }
   async openModalCrearMesa(){
+    await this.database.loadMesas(); // Cargar los números disponibles antes de abrir
+    console.log("test: " + this.mesas)
     this.currentModal = await this.modalController.create({
       component: ModalCrearMesaComponent
     });
@@ -40,7 +41,7 @@ export class Tab1Page {
     const { data, role } = await this.currentModal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.message = `Mesa: ${data.mesa}, Hora: ${data.hora}, Precio: ${data.precio}`;
+      
     }
     return this.currentModal;
   }

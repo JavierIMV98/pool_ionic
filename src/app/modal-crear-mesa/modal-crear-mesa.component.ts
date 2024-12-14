@@ -36,7 +36,14 @@ export class ModalCrearMesaComponent  implements OnInit {
   prices = [75, 80, 85, 90, 92, 97, 100, 110, 113, 120, 125, 130, 135];
 
   constructor(private modalCtrl: ModalController, private database: DatabaseService) {}
-
+  async loadDisponibles() {
+    try {
+      this.nrosdisponibles = await this.database.getNrosDisp();
+      console.log("Desde Modal: " + this.nrosdisponibles);
+    } catch (error) {
+      console.error('Error cargando números disponibles:', error);
+    }
+  }
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
@@ -51,7 +58,7 @@ export class ModalCrearMesaComponent  implements OnInit {
         extras: 0, // Valor por defecto para extras
       };
   
-      console.log('Mesa a insertar:', nuevaMesa);
+      console.log('Mesa a insertar: (modal)', nuevaMesa);
   
       this.database.insertMesa(nuevaMesa).then(() => {
         console.log('Mesa insertada correctamente en la base de datos.');
@@ -70,9 +77,7 @@ export class ModalCrearMesaComponent  implements OnInit {
     const hours = now.getHours().toString().padStart(2, '0'); // Agrega ceros a la izquierda si es necesario
     const minutes = now.getMinutes().toString().padStart(2, '0');
     this.selectedTime = `${hours}:${minutes}`; // Formato HH:mm
-    effect(() => {
-      this.nrosdisponibles = this.database.getNrosDisp();
-    });
+    this.loadDisponibles();
   }
 
   onNumeroChange(value: any) {
