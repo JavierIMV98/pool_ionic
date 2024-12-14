@@ -17,7 +17,7 @@ import { DatabaseService } from '../services/database.service';
   providers: [ModalController]
 })
 export class Tab1Page {
-  mesas = this.database.getMesas(); // Recupera las mesas desde la base de datos
+  mesas = () => this.database.getMesas();// Recupera las mesas desde la base de datos
   private currentModal: HTMLIonModalElement | null = null;
   message : string = '';
 

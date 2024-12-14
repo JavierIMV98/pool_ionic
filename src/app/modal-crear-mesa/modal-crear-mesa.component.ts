@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect, computed  } from '@angular/core';
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonTitle, IonContent, IonInput, IonItem, IonLabel, IonPicker } from "@ionic/angular/standalone";
 import { ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +26,7 @@ export class ModalCrearMesaComponent  implements OnInit {
   inicio: string;
   precio: number = 0;
 
-  nrosdisponibles: number[] = this.database.getNrosDisp();
+  nrosdisponibles = this.database.getNrosDisp();
 
   selectedMesa: number = 1;
   selectedTime: string = "";
@@ -43,25 +43,24 @@ export class ModalCrearMesaComponent  implements OnInit {
 
 
   confirm() {
-    // Verificar si todos los campos requeridos están llenos y no son null/undefined
     if (this.numero && this.selectedTime && this.precio) {
-      // Crear un nuevo objeto Mesa
-      const nuevaMesa = {
+      const nuevaMesa: Mesa = {
         numero: this.numero,
         inicio: this.selectedTime,
         precio: this.precio,
-        extras: 0 // Puedes definir un valor por defecto para los extras si es necesario
+        extras: 0, // Valor por defecto para extras
       };
-
-      // Insertar la nueva mesa en la base de datos
+  
+      console.log('Mesa a insertar:', nuevaMesa);
+  
       this.database.insertMesa(nuevaMesa).then(() => {
+        console.log('Mesa insertada correctamente en la base de datos.');
         this.modalCtrl.dismiss(nuevaMesa, 'confirm');
       }).catch(error => {
-        console.error('Error al insertar la mesa:', error);
+        console.error('Error al insertar la mesa en la base de datos:', error);
         alert('Error al insertar la mesa.');
       });
     } else {
-      // Mostrar un mensaje de error si alguno de los campos está vacío
       alert('Por favor, completa todos los campos.');
     }
   }
@@ -71,7 +70,9 @@ export class ModalCrearMesaComponent  implements OnInit {
     const hours = now.getHours().toString().padStart(2, '0'); // Agrega ceros a la izquierda si es necesario
     const minutes = now.getMinutes().toString().padStart(2, '0');
     this.selectedTime = `${hours}:${minutes}`; // Formato HH:mm
-    this.nrosdisponibles = this.database.getNrosDisp();
+    effect(() => {
+      this.nrosdisponibles = this.database.getNrosDisp();
+    });
   }
 
   onNumeroChange(value: any) {

@@ -1,6 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { CapacitorSQLite, SQLiteConnection , SQLiteDBConnection} from '@capacitor-community/sqlite';
 
+
 const DB_POOL = 'mydb';
 
 
@@ -27,7 +28,7 @@ export class DatabaseService {
   private mesas: WritableSignal<Mesa[]> = signal<Mesa[]>([]);
   private clientes: WritableSignal<Cliente[]> = signal<Cliente[]>([]);
   constructor() { }
-  private nrosdisponibles: number[];
+  private nrosdisponibles: WritableSignal<number[]> = signal<number[]>([]);
 
   async initializPlugin(){
     this.db = await this.sqlite.createConnection(
@@ -39,30 +40,28 @@ export class DatabaseService {
     CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, deuda INTEGER, extras TEXT );`;
 
     await this.db.execute(schema);
-    this.loadMesas();
+    await this.loadMesas();
     this.loadClientes();
     return true;
   }
   async loadMesas() {
     const result = await this.db.query('SELECT numero FROM mesas');
-    const mesas = result.values || []; // Obtenemos los números de mesa ya ocupados
-    this.mesas.set(mesas);
+    const mesas = result.values || [];
+
+    
   
     // Lista de todos los números de mesa (1 al 12)
     const todosLosNumeros = Array.from({ length: 12 }, (_, i) => i + 1);
   
     // Filtramos los números disponibles restando los números ocupados
-    const ocupados = mesas.map((m: any) => m.numero); // Convertimos a un array de números
-    this.nrosdisponibles = todosLosNumeros.filter(numero => !ocupados.includes(numero));
+    const ocupados = mesas.map((m: any) => m.numero);
+    this.nrosdisponibles.set(todosLosNumeros.filter(numero => !ocupados.includes(numero)));
   
-    console.log('Números disponibles:', this.nrosdisponibles);
-  
-    // Actualizamos la señal con las mesas existentes
-
+    console.log('Números disponibles:', this.nrosdisponibles());
   }
-
-  getNrosDisp(){
-    return this.nrosdisponibles;
+  
+  getNrosDisp() {
+    return this.nrosdisponibles.asReadonly();
   }
   
 
@@ -76,17 +75,27 @@ export class DatabaseService {
     return this.clientes;
   }
   getMesas(){
-    return this.mesas;
+    return this.mesas();
   }
 
   //CRUD MESAS:
 
   async insertMesa(mesa: Mesa) {
-    const query = `INSERT INTO mesas (numero, inicio, precio, extras) VALUES (?, ?, ?, ?);`;
-    const values = [mesa.numero, mesa.inicio, mesa.precio, mesa.extras];
-    const result = await this.db.query(query, values);
-    this.loadMesas();
-    return result;
+    try {
+      const query = `INSERT INTO mesas (numero, inicio, precio, extras) VALUES (?, ?, ?, ?);`;
+      const values = [mesa.numero, mesa.inicio, mesa.precio, mesa.extras];
+      console.log('Ejecutando query:', query, 'con valores:', values);
+  
+      const result = await this.db.query(query, values);
+  
+      console.log('Resultado de la inserción:', result);
+  
+      await this.loadMesas(); // Recargar las mesas después de la inserción
+      return result;
+    } catch (error) {
+      console.error('Error en insertMesa:', error);
+      throw error;
+    }
   }
 
   async updateMesa(mesa: Mesa) {

@@ -31,7 +31,7 @@
 
   <ion-button (click)="createMesa()">Añadir Mesa</ion-button>
 
-  <ion-item *ngFor="let mesa of mesas()">
+  <ion-item *ngFor="let mesa of mesas">
     <ion-label>
       {{mesa.numero}} - {{mesa.inicio}} - ${{mesa.precio}}
     </ion-label>

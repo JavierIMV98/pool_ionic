@@ -20,7 +20,7 @@
       [(ngModel)]="numero" 
       (change)="onNumeroChange(getSelectValue($event))">
       <option [value]="null" disabled selected>Seleccione un número</option>
-      <option *ngFor="let num of nrosdisponibles" [value]="num">
+      <option *ngFor="let num of nrosdisponibles()" [value]="num">
         {{ num }}
       </option>
     </select>
