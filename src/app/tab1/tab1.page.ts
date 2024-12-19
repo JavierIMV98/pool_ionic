@@ -19,14 +19,7 @@ import { DatabaseService } from '../services/database.service';
 export class Tab1Page {
   mesas = () => this.database.getMesas();// Recupera las mesas desde la base de datos
   private currentModal: HTMLIonModalElement | null = null;
-  message : string = '';
 
-
-  /* items = [
-    { imagen: 'assets/poolball1.png', inicio: '14:00', precio: '90' },
-    { imagen: 'assets/poolball2.png', inicio: '15:30', precio: '120' },
-    { imagen: 'assets/poolball3.png', inicio: '16:45', precio: '75' },
-  ]; */
   constructor(private router: Router, private route: ActivatedRoute, private modalController: ModalController, private database: DatabaseService) {}
   goToDetails(mesa: Mesa) {
     this.router.navigate(['detalles-mesa'], { relativeTo: this.route, queryParams: mesa });

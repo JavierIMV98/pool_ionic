@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButton } from '@ionic/angular/standalone';
 import { DatabaseService } from '../services/database.service';
-import { Mesa } from '../services/database.service';
+import { RegistroHistorial } from '../services/database.service';
 
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,11 @@ import { FormsModule } from '@angular/forms';
   imports: [IonButton, IonInput, IonLabel, IonItem, IonHeader, IonToolbar, IonTitle, IonContent,FormsModule ,  NgFor],
 })
 export class Tab3Page {
+  registros = () => this.database.getRegistros();
 
+  can_cobros: string = '';
+  tot_cobros: string = '';
 
+  constructor(private database: DatabaseService) {}
+  
 }

@@ -19,6 +19,13 @@ export interface Cliente{
   extras: string;
 }
 
+export interface RegistroHistorial{
+  numero :number;
+  inicio: string;
+  final: string;
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,6 +34,7 @@ export class DatabaseService {
   private db: SQLiteDBConnection;
   private mesas: WritableSignal<Mesa[]> = signal<Mesa[]>([]);
   private clientes: WritableSignal<Cliente[]> = signal<Cliente[]>([]);
+  private registros: WritableSignal<RegistroHistorial[]> = signal<RegistroHistorial[]>([]);
   constructor() { }
   private nrosdisponibles: WritableSignal<number[]> = signal<number[]>([]);
 
@@ -37,7 +45,8 @@ export class DatabaseService {
     await this.db.open();
 
     const schema = `CREATE TABLE IF NOT EXISTS mesas (numero INTEGER PRIMARY KEY, inicio TEXT NOT NULL, precio INTEGER NOT NULL, extras INTEGER );
-    CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, deuda INTEGER, extras TEXT );`;
+    CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, deuda INTEGER, extras TEXT );
+    CREATE TABLE IF NOT EXISTS historial (id INTEGER PRIMARY KEY AUTOINCREMENT, numero INTEGER, inicio TEXT NOT NULL, final TEXT NOT NULL, total INTEGER);`;
 
     await this.db.execute(schema);
     await this.loadMesas();
@@ -79,7 +88,9 @@ export class DatabaseService {
   getMesas(){
     return this.mesas();
   }
-
+  getRegistros(){
+    return this.registros();
+  }
   async iniciarDB(){
 
   }
@@ -109,12 +120,23 @@ console.log('Service: Estado actual de la tabla mesas:', verify.values);
   }
 
   async updateMesa(mesa: Mesa) {
-    const query = `UPDATE mesas SET inicio = ?, precio = ?, extras = ? WHERE numero = ?;`;
-    const values = [mesa.inicio, mesa.precio, mesa.extras, mesa.numero];
-    const result = await this.db.query(query, values);
-    this.loadMesas();
-    return result;
+    try {
+      const query = `UPDATE mesas SET inicio = ?, precio = ?, extras = ? WHERE numero = ?;`;
+      const values = [mesa.inicio, mesa.precio, mesa.extras, mesa.numero];
+      console.log('Ejecutando query:', query, values);
+  
+      const result = await this.db.query(query, values);
+      console.log('Resultado de la actualización:', result);
+  
+      // Opcional: Actualizar la lista de mesas si es necesario
+      await this.loadMesas();
+      return result;
+    } catch (error) {
+      console.error('Error al actualizar la mesa en el servicio:', error);
+      throw error; // Lanza el error para que lo maneje el componente
+    }
   }
+  
 
   async deleteMesa(numero: number) {
     const query = `DELETE FROM mesas WHERE numero = ?;`;
@@ -146,6 +168,38 @@ console.log('Service: Estado actual de la tabla mesas:', verify.values);
       const query = `DELETE FROM clientes WHERE id = ?;`;
       const result = await this.db.query(query, [id]);
       this.loadClientes();
+      return result;
+    }
+
+// CRUD HISTORIAL
+
+async loadHistorial() {
+  try {
+    if (!this.db) {
+      throw new Error('La base de datos no está inicializada.');
+    }
+
+    const result = await this.db.query('SELECT * FROM historial');
+    const hists = result.values || [];
+
+    this.registros.set(hists);
+  } catch (error) {
+    console.error('Error al cargar registros', error);
+  }
+}
+
+    async insertRegistro(registroHistorial: RegistroHistorial) {
+      const query = `INSERT INTO historial (numero, inicio, final, total) VALUES (?, ?, ?, ?);`;
+      const values = [registroHistorial.numero, registroHistorial.inicio, registroHistorial.final, registroHistorial.total];
+      const result = await this.db.query(query, values);
+      this.loadHistorial();
+      return result;
+    }
+
+    async deleteHistorial(id: number) {
+      const query = `DELETE FROM historial WHERE id = ?;`;
+      const result = await this.db.query(query, [id]);
+      this.loadHistorial();
       return result;
     }
   

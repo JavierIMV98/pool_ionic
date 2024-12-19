@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Historial
+      Historial de Mesas
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,8 +9,39 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Historial</ion-title>
+      <ion-title size="large">Historial de Mesas</ion-title>
     </ion-toolbar>
   </ion-header>
+  <div class="d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-between w-75">
+      <div class="box text-center p-3">
+        <p>Cantidad Cobros: {{can_cobros}}</p>
+      </div>
+      <div class="box text-center p-3">
+        <p>Total Cobros: {{tot_cobros}}</p>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">N°</th>
+        <th scope="col">Inicio</th>
+        <th scope="col">Final</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container  *ngFor="let reg of registros()">
+        <tr>
+          <td class="table-dark" scope="row">{{reg.numero}}</td>
+          <td class="table-dark">{{reg.inicio}}</td>
+          <td class="table-dark">{{reg.final}}</td>
+          <td class="table-dark">{{reg.total}}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 
 </ion-content>
