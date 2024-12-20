@@ -18,7 +18,7 @@
       <img 
         [src]="'assets/poolball' + item.numero.toString() + '.png'" 
         class="img-fluid rounded-circle" 
-        width="150px" 
+        width="130px" 
         alt="Imagen de Mesa {{ item.numero }}" />
     </div>
 
@@ -58,16 +58,9 @@
 
       <!-- Total -->
       <div class="mb-3">
-        <label for="total" class="form-label">Total</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="total" 
-          [(ngModel)]="total" 
-          name="total"
-          readonly />
-      </div>      
-
+        <label for="exampleFormControlTextarea1" class="form-label">Total</label>
+        <textarea readonly class="form-control" id="exampleFormControlTextarea1" rows="2">{{total}}</textarea>
+      </div>
       <!-- Botones -->
       <div class="d-grid gap-2">
         <button 

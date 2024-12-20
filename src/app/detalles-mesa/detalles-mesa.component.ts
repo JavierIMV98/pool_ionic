@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute ,  Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCardHeader, IonCardContent, IonCardTitle, IonGrid, IonRow, IonCol, IonCard } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCardHeader, IonCardContent, IonCardTitle, IonGrid, IonRow, IonCol, IonCard, IonItem, IonLabel } from '@ionic/angular/standalone';
 import { AlertController, ToastController } from '@ionic/angular'; // Para alertas y notificaciones
 import { DatabaseService } from '../services/database.service';
 import { Mesa } from '../services/database.service'; // Ajusta según la ubicación de tu modelo
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './detalles-mesa.component.html',
   styleUrls: ['./detalles-mesa.component.scss'],
   standalone: true,
-  imports: [
+  imports: [IonLabel, IonItem, 
     // Importaciones necesarias para componentes de Ionic
     IonCard,
     IonCardContent,
@@ -26,7 +26,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class DetallesMesaComponent implements OnInit {
   item: Mesa; // Representa la mesa seleccionada
-  total: any;
+
+
+  total = '';
 
   constructor(
     private router: Router,
@@ -37,6 +39,7 @@ export class DetallesMesaComponent implements OnInit {
   ) {
     this.route.queryParams.subscribe((params) => {
       this.item = { ...params } as Mesa; // Crear una copia del objeto (PARA EVITAR EL READONLY)
+      this.total = this.calcularTotal();
     });
   }
 
@@ -119,21 +122,51 @@ export class DetallesMesaComponent implements OnInit {
       await this.database.insertRegistro(registroHistorial);
   
       // Eliminar la mesa
-      await this.database.deleteMesa(this.item.numero);
-  
-      // Volver a la ruta anterior después de unos segundos
-      setTimeout(() => {
+      const resultado = await this.database.deleteMesa(this.item.numero);
+      
+      if(resultado){
+        alert('Mesa eliminada y registrada en el historial correctamente.');
         this.router.navigate(['/tabs/tab1']);
-      }, 2000);
-  
-      alert('Mesa eliminada y registrada en el historial correctamente.');
+      }
     } catch (error) {
       console.error('Error al eliminar la mesa:', error);
       alert('Hubo un error al eliminar la mesa.');
     }
   }
   
+private calcularTotal(){
+  try{
+    const ahora = new Date(); // Hora actual
+    const horaFinal = `${ahora
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${ahora.getMinutes()
+      .toString()
+      .padStart(2, '0')}`; // Hora en formato HH:mm
 
+    // Calcular la diferencia en minutos
+    const inicio = this.item.inicio.split(':'); // Suponiendo que `inicio` está en formato HH:mm
+    const horaInicio = new Date();
+    horaInicio.setHours(parseInt(inicio[0]), parseInt(inicio[1]), 0, 0);
+
+    // Si la hora final es menor que la hora inicial, asumir que pertenece al día siguiente
+    if (horaInicio > ahora) {
+      ahora.setDate(ahora.getDate() + 1); // Avanzar un día para la hora actual
+    }
+
+    const diferenciaMinutos = Math.floor(
+      (ahora.getTime() - horaInicio.getTime()) / 60000
+    );
+
+    const total = diferenciaMinutos * this.item.precio; // Cálculo del total
+    const suma = Number(total) + Number(this.item.extras);
+    const detalle:string = "Tiempo: (" + diferenciaMinutos + ") = $" + total + " + Extras: (" + this.item.extras + ") = " + (suma);
+    return detalle;
+  }catch (error) {
+    console.error('Error al cargar datos', error);
+    return "0"
+  }
+}
   
 
   // Método para mostrar notificaciones tipo toast
