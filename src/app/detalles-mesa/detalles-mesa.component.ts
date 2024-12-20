@@ -36,7 +36,7 @@ export class DetallesMesaComponent implements OnInit {
     private toastController: ToastController
   ) {
     this.route.queryParams.subscribe((params) => {
-      this.item = params as Mesa; // Carga los datos desde la URL
+      this.item = { ...params } as Mesa; // Crear una copia del objeto (PARA EVITAR EL READONLY)
     });
   }
 
