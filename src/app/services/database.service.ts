@@ -119,23 +119,32 @@ console.log('Service: Estado actual de la tabla mesas:', verify.values);
     
   }
 
-  async updateMesa(mesa: Mesa) {
-    try {
-      const query = `UPDATE mesas SET inicio = ?, precio = ?, extras = ? WHERE numero = ?;`;
-      const values = [mesa.inicio, mesa.precio, mesa.extras, mesa.numero];
-      console.log('Ejecutando query:', query, values);
-  
-      const result = await this.db.query(query, values);
-      console.log('Resultado de la actualización:', result);
-  
-      // Opcional: Actualizar la lista de mesas si es necesario
-      await this.loadMesas();
-      return result;
-    } catch (error) {
-      console.error('Error al actualizar la mesa en el servicio:', error);
-      throw error; // Lanza el error para que lo maneje el componente
+async updateMesa(mesa: Mesa) {
+  try {
+    const query = `UPDATE mesas SET inicio = ?, precio = ?, extras = ? WHERE numero = ?;`;
+    const values = [mesa.inicio, mesa.precio, mesa.extras, mesa.numero];
+
+    console.log('Ejecutando query:', query);
+    console.log('Valores:', values);
+
+    const result = await this.db.query(query, values);
+    console.log('Resultado del query:', result);
+
+    // Si el método no lanza un error, asumimos que el query fue exitoso
+    if (result && Object.keys(result).length > 0) {
+      console.log('Mesa actualizada correctamente.');
+      await this.loadMesas(); // Actualizar la lista de mesas
+      return true;
+    } else {
+      console.error('No se actualizó ninguna fila. Verifica los datos.');
+      return false;
     }
+  } catch (error) {
+    console.error('Error al actualizar la mesa:', error);
+    throw error;
   }
+}
+
   
 
   async deleteMesa(numero: number) {
@@ -179,7 +188,7 @@ async loadHistorial() {
       throw new Error('La base de datos no está inicializada.');
     }
 
-    const result = await this.db.query('SELECT * FROM historial');
+    const result = await this.db.query('SELECT * FROM historial ORDER BY id DESC');
     const hists = result.values || [];
 
     this.registros.set(hists);
