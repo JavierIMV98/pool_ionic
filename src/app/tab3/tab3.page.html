@@ -25,7 +25,7 @@
   <div class="d-grid gap-2 m-3">
     <button 
       type="button" 
-      class="btn btn-danger p-2" 
+      class="btn btn-danger p-2" (click)="borrarHisto()"
       >Eliminar Historial</button>
   </div>
 
@@ -40,7 +40,7 @@
     </thead>
     <tbody>
       <ng-container  *ngFor="let reg of registros()">
-        <tr>
+        <tr (click)="eliminar(reg.numero, reg.inicio, reg.final, reg.total)">
           <td class="table-dark" scope="row">{{reg.numero}}</td>
           <td class="table-dark">{{reg.inicio}}</td>
           <td class="table-dark">{{reg.final}}</td>

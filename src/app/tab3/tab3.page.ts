@@ -17,9 +17,33 @@ import { FormsModule } from '@angular/forms';
 export class Tab3Page {
   registros = () => this.database.getRegistros();
 
-  can_cobros: string = '';
-  tot_cobros: string = '';
+  can_cobros: number = 0;
+  tot_cobros: number = 0;
 
   constructor(private database: DatabaseService) {}
   
+  async borrarHisto(){
+    const confirmar = confirm(
+      `¿Estás seguro de que deseas eliminar el historial?`
+    );
+  
+    if (!confirmar) {
+      console.log('Eliminación cancelada por el usuario.');
+      return; // Si el usuario cancela, no se realiza ninguna acción
+    }
+    await this.database.borrarHistorial();
+    alert("Historial Eliminado")
+    
+  }
+  async eliminar(number:number, ini:string, fin:string, tot:number){
+    const confirmar = confirm(
+      `¿Estás seguro de que deseas eliminar el registro?`
+    );
+    if (!confirmar) {
+      console.log('Eliminación cancelada por el usuario.');
+      return; // Si el usuario cancela, no se realiza ninguna acción
+    }
+    await this.database.deleteHistorial(number, ini, fin, tot);
+    alert("Registro Eliminado")
+  }
 }

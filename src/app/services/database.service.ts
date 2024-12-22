@@ -50,6 +50,7 @@ export class DatabaseService {
 
     await this.db.execute(schema);
     await this.loadMesas();
+    await this.loadHistorial();
     this.loadClientes();
     return true;
   }
@@ -205,9 +206,25 @@ async loadHistorial() {
       return result;
     }
 
-    async deleteHistorial(id: number) {
-      const query = `DELETE FROM historial WHERE id = ?;`;
-      const result = await this.db.query(query, [id]);
+    async deleteHistorial(numero: number, inicio: string, final: string, total: number) {
+      try {
+        const query = `
+          DELETE FROM historial 
+          WHERE numero = ? AND inicio = ? AND final = ? AND total = ?;
+        `;
+        const result = await this.db.query(query, [numero, inicio, final, total]);
+        await this.loadHistorial(); // Recargar el historial después de eliminar
+        return result;
+      } catch (error) {
+        console.error('Error al eliminar el historial:', error);
+        throw error;
+      }
+    }
+    
+
+    async borrarHistorial() {
+      const query = `DELETE FROM historial;`;
+      const result = await this.db.query(query);
       this.loadHistorial();
       return result;
     }
