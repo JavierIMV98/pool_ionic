@@ -228,6 +228,32 @@ async loadHistorial() {
       this.loadHistorial();
       return result;
     }
-  
+
+
+    async calcularTotalesHistorial(): Promise<{ cantidad: number; suma: number }> {
+      try {
+        if (!this.db) {
+          throw new Error('La base de datos no está inicializada.');
+        }
+    
+        // Ajusta la consulta para contar todos los registros, pero sumar solo los valores mayores a 4000
+        const query = `
+          SELECT 
+            COUNT(*) AS cantidad, 
+            SUM(CASE WHEN total > 4000 THEN total ELSE 0 END) AS suma 
+          FROM historial;
+        `;
+    
+        const result = await this.db.query(query);
+        const row = result.values?.[0] || { cantidad: 0, suma: 0 };
+    
+        return { cantidad: row.cantidad, suma: row.suma };
+      } catch (error) {
+        console.error('Error al calcular totales:', error);
+        return { cantidad: 0, suma: 0 }; // Devuelve valores predeterminados en caso de error
+      }
+    }
+    
+    
 }
 

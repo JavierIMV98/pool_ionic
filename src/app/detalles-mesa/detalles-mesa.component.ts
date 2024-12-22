@@ -108,7 +108,12 @@ export class DetallesMesaComponent implements OnInit {
         (ahora.getTime() - horaInicio.getTime()) / 60000
       );
   
-      const total = diferenciaMinutos * this.item.precio; // Cálculo del total
+      let total = diferenciaMinutos * this.item.precio; // Cálculo del total
+
+      // Validación del mínimo
+      if (diferenciaMinutos < 55) {
+        total = diferenciaMinutos;
+      }
   
       // Crear el registro del historial
       const registroHistorial = {
@@ -160,8 +165,14 @@ private calcularTotal(){
 
     const total = diferenciaMinutos * this.item.precio; // Cálculo del total
     const suma = Number(total) + Number(this.item.extras);
-    const detalle:string = "Tiempo: (" + diferenciaMinutos + ") = $" + total + " + Extras: (" + this.item.extras + ") = " + (suma);
-    return detalle;
+    if(diferenciaMinutos < 55){
+      let detalle:string = "Tiempo: (" + diferenciaMinutos + ") + Extras: (" + this.item.extras + ")";
+      return detalle;
+    }else{
+      let detalle:string = "Tiempo: (" + diferenciaMinutos + ") = $" + total + " + Extras: (" + this.item.extras + ") = " + (suma);
+      return detalle;
+    }
+
   }catch (error) {
     console.error('Error al cargar datos', error);
     return "0"

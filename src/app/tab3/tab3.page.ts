@@ -21,6 +21,14 @@ export class Tab3Page {
   tot_cobros: number = 0;
 
   constructor(private database: DatabaseService) {}
+
+  ngOnInit() {
+    this.actualizarTotales();
+  }
+
+  ionViewWillEnter() {
+    this.actualizarTotales();
+  }
   
   async borrarHisto(){
     const confirmar = confirm(
@@ -32,7 +40,8 @@ export class Tab3Page {
       return; // Si el usuario cancela, no se realiza ninguna acción
     }
     await this.database.borrarHistorial();
-    alert("Historial Eliminado")
+    alert("Historial Eliminado");
+    this.actualizarTotales(); 
     
   }
   async eliminar(number:number, ini:string, fin:string, tot:number){
@@ -44,6 +53,14 @@ export class Tab3Page {
       return; // Si el usuario cancela, no se realiza ninguna acción
     }
     await this.database.deleteHistorial(number, ini, fin, tot);
-    alert("Registro Eliminado")
+    alert("Registro Eliminado");
+    this.actualizarTotales(); // Recalcular valores
+  }
+
+  async actualizarTotales() {
+    const { cantidad, suma } = await this.database.calcularTotalesHistorial();
+    this.can_cobros = cantidad;
+    this.tot_cobros = suma;
+    console.log(`Cantidad: ${cantidad}, Suma: ${suma}`);
   }
 }
