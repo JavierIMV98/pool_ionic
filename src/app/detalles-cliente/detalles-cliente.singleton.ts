@@ -44,7 +44,7 @@ export class DetallesClienteSingleton  implements OnInit {
   ngOnInit() {}
   async onActualizar() {
     try {
-      if (!this.item || !this.item.nombre || !this.item.deuda || !this.item.extras) {
+      if (!this.item ) {
         alert('Por favor, revisa los datos antes de actualizar.');
         return;
       }
@@ -70,7 +70,7 @@ export class DetallesClienteSingleton  implements OnInit {
   
     // Mostrar confirmación antes de eliminar
     const confirmar = confirm(
-      `¿Estás seguro de que deseas eliminar Cliente ${this.item.nombre}?`
+      `¿Estás seguro de que deseas eliminar cliente ${this.item.nombre}?`
     );
   
     if (!confirmar) {
@@ -83,7 +83,7 @@ export class DetallesClienteSingleton  implements OnInit {
       const resultado = await this.database.deleteCliente(this.item.nombre, this.item.deuda, this.item.extras);
       
       if(resultado){
-        alert('Mesa eliminada y registrada en el historial correctamente.');
+        alert('Cliente eliminado.');
         this.router.navigate(['/tabs/tab2']);
       }
     } 
