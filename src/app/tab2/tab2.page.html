@@ -12,6 +12,23 @@
       <ion-title size="large">Clientes</ion-title>
     </ion-toolbar>
   </ion-header>
-
+  <ion-content class="ion-padding">
+    <div class="mb-3">
+      <ion-button expand="block" (click)="openModalCrearCliente()">Crear Cliente</ion-button>
+    </div>
+    <ion-searchbar [debounce]="200" (ionInput)="handleInput($event)" show-clear-button="always" placeholder="Buscar nombre"></ion-searchbar>
+      <ion-modal></ion-modal>
+      <ion-list>
+        <ion-item *ngFor="let result of results">
+          <ion-label>{{ result }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <!-- <ng-container  *ngFor="let cli of clientes()">
+        <app-card-cliente
+          [nombre]="cli.nombre"
+          (click)="goToDetails(cli)">
+        </app-card-cliente>
+      </ng-container> -->
+  </ion-content>
 
 </ion-content>

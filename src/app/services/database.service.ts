@@ -84,7 +84,7 @@ export class DatabaseService {
   }
 
   getClientes(){
-    return this.clientes;
+    return this.clientes();
   }
   getMesas(){
     return this.mesas();

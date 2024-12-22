@@ -20,6 +20,10 @@ export const routes: Routes = [
         path: 'tab2',
         loadComponent: () =>
           import('../tab2/tab2.page').then((m) => m.Tab2Page),
+      },{
+        path: 'tab2/detalles-cliente',
+        loadComponent: () =>
+          import('../detalles-cliente/detalles-cliente.singleton').then((m) => m.DetallesClienteSingleton),
       },
       {
         path: 'tab3',
