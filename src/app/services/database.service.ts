@@ -13,7 +13,6 @@ export interface Mesa{
 }
 
 export interface Cliente{
-  id :number;
   nombre: string;
   deuda: number;
   extras: string;
@@ -51,7 +50,7 @@ export class DatabaseService {
     await this.db.execute(schema);
     await this.loadMesas();
     await this.loadHistorial();
-    this.loadClientes();
+    await this.loadClientes();
     return true;
   }
   async loadMesas() {
@@ -78,14 +77,29 @@ export class DatabaseService {
   
 
 
-  async loadClientes(){
-    const clientes = await this.db.query('SELECT * FROM clientes')
-    this.clientes.set(clientes.values || []);
+  async loadClientes(): Promise<Cliente[]> {
+    try {
+      if (!this.db) {
+        throw new Error('La base de datos no está inicializada.');
+      }
+  
+      const result = await this.db.query('SELECT * FROM clientes');
+      const clientes = result.values || [];
+      this.clientes.set(clientes);
+      return clientes; // Devuelve los clientes
+    } catch (error) {
+      console.error('Error al cargar los clientes:', error);
+      return []; // Devuelve un array vacío en caso de error
+    }
   }
+  
 
-  getClientes(){
-    return this.clientes();
+  async getClientes(): Promise<Cliente[]> {
+    // Aquí debería ir tu lógica para recuperar clientes desde la base de datos
+    const clientes: Cliente[] = []; // Simula un array de clientes
+    return clientes;
   }
+  
   getMesas(){
     return this.mesas();
   }
@@ -159,24 +173,24 @@ async updateMesa(mesa: Mesa) {
     //CRUD CLIENTES:
 
     async insertCliente(cliente: Cliente) {
-      const query = `INSERT INTO cliente (nombre, deuda, extras) VALUES (?, ?, ?);`;
+      const query = `INSERT INTO clientes (nombre, deuda, extras) VALUES (?, ?, ?);`;
       const values = [cliente.nombre, cliente.deuda, cliente.extras];
       const result = await this.db.query(query, values);
-      this.loadClientes();
+      await this.loadClientes();
       return result;
     }
   //parece que este no va a estar bien...
     async updateCliente(cliente: Cliente) {
-      const query = `UPDATE cliente SET nombre = ?, deuda = ?, extras = ? WHERE id = ?;`;
-      const values = [cliente.nombre, cliente.deuda, cliente.extras];
+      const query = `UPDATE clientes SET deuda = ?, extras = ? WHERE nombre = ?;`;
+      const values = [cliente.deuda, cliente.extras, cliente.nombre];
       const result = await this.db.query(query, values);
       this.loadClientes();
       return result;
     }
   
-    async deleteCliente(id: number) {
-      const query = `DELETE FROM clientes WHERE id = ?;`;
-      const result = await this.db.query(query, [id]);
+    async deleteCliente(nombre:string, deuda:number, extras:string) {
+      const query = `DELETE FROM clientes WHERE nombre = ? AND deuda = ? AND extras = ? ;`;
+      const result = await this.db.query(query, [nombre, deuda, extras]);
       this.loadClientes();
       return result;
     }

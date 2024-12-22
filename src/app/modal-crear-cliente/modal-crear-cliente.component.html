@@ -1,3 +1,31 @@
-<p>
-  modal-crear-cliente works!
-</p>
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title>Crear Mesa</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirmar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+
+  <div >
+    <label class="form-label" for="nombre">Nombre Cliente:</label>
+    <input class="form-control" type="text" required="true" 
+    [(ngModel)]="nombre">
+  </div>
+
+  <div class="mt-3">
+    <label class="form-label" for="deuda">Deuda (no venta):</label>
+    <input class="form-control" type="number" required="true" 
+    [(ngModel)]="deuda">
+  </div>
+
+  <div class="mt-3">
+    <label class="form-label" for="precioSelect">Pendientes:</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" [(ngModel)]="extras"></textarea>
+  </div>
+</ion-content>

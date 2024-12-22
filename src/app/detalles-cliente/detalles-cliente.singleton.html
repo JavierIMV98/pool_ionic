@@ -1,3 +1,72 @@
-<p>
-  detalles-cliente works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Detalles Cliente
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Cliente</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class=" p-3 ">
+    <div class="text-center mb-3">
+      <img 
+      src="assets/cliente.png" 
+        class="img-fluid rounded-circle" 
+        width="130px" />
+    </div>
+
+    <form>
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre Cliente</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          readonly
+          id="nombre" 
+          [(ngModel)]="item.nombre" 
+          name="nombre" />
+      </div>
+
+      <!-- Deudas -->
+      <div class="mb-3">
+        <label for="deuda" class="form-label">Deudas Cliente (No Venta)</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="deuda" 
+          [(ngModel)]="item.deuda" 
+          name="deuda" />
+      </div>
+
+      <!-- Pendientes -->
+      <div class="mb-3">
+        <label for="extras" class="form-label">Pendientes Cliente</label>
+        <textarea 
+          class="form-control" 
+          id="extras" 
+          [(ngModel)]="item.extras" 
+          name="extras"></textarea>
+      </div>
+
+
+      <!-- Botones -->
+      <div class="d-grid gap-2">
+        <button 
+          type="button" 
+          class="btn btn-primary p-3 mt-3 mb-3" 
+          (click)="onActualizar()">Actualizar</button>
+        <button 
+          type="button" 
+          class="btn btn-danger p-3" 
+          (click)="onEliminar()">Eliminar</button>
+      </div>
+    </form>
+  </div>
+</ion-content>
