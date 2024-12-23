@@ -15,12 +15,19 @@
 
   <div class=" p-3 ">
     <div class="text-center mb-3">
-      <img 
+      <img id="alert-cambiar-mesa"
         [src]="'assets/poolball' + item.numero.toString() + '.png'" 
         class="img-fluid rounded-circle" 
         width="130px" 
         alt="Imagen de Mesa {{ item.numero }}" />
     </div>
+    <ion-alert
+    trigger="alert-cambiar-mesa"
+    header="Cambiar Mesa"
+    message="Ingrese el número de la mesa (1-12)"
+    [inputs]="alertInputs"
+    [buttons]="alertButtons"
+  ></ion-alert> 
 
     <form>
       <!-- Hora de Inicio -->

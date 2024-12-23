@@ -268,6 +268,38 @@ async loadHistorial() {
       }
     }
     
-    
+      // Función para verificar si la mesa existe en la base de datos
+  async verificarMesa(numeroMesa: number): Promise<boolean> {
+    try {
+      const query = `SELECT COUNT(*) AS count FROM mesas WHERE numero = ?;`;
+      const result = await this.db.query(query, [numeroMesa]);
+      const count = result.values?.[0]?.count || 0;
+      return count > 0; // Si el conteo es mayor que 0, la mesa existe.
+    } catch (error) {
+      console.error('Error al verificar mesa:', error);
+      throw error; // Puedes manejar este error según tu lógica
+    }
+  }
+
+  // Función para reemplazar la mesa
+  async reemplazarMesa(mesa: Mesa) {
+    console.log("Reemplazar Servicio...")
+    try {
+      const query = `
+        INSERT INTO mesas (numero, inicio, precio, extras)
+        VALUES (?, ?, ?, ?);
+      `;
+      const values = [mesa.numero, mesa.inicio, mesa.precio, mesa.extras];
+      await this.db.query(query, values);
+  
+      // Recargar las mesas después del reemplazo
+      await this.loadMesas();
+    } catch (error) {
+      console.error('Error al reemplazar la mesa:', error);
+      throw error;
+    }
+  }
+  
+
 }
 
