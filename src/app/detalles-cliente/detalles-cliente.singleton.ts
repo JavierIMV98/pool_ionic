@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute ,  Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonCardHeader, IonCardContent, IonCardTitle, IonGrid, IonRow, IonCol, IonCard, IonItem, IonLabel } from '@ionic/angular/standalone';
-import { AlertController, ToastController } from '@ionic/angular'; // Para alertas y notificaciones
+import { AlertController } from '@ionic/angular'; // Solo AlertController
 import { DatabaseService } from '../services/database.service';
 import { Cliente } from '../services/database.service'; // Ajusta según la ubicación de tu modelo
 import { FormsModule } from '@angular/forms';
@@ -23,70 +23,102 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
 })
-export class DetallesClienteSingleton  implements OnInit {
-  item:Cliente;
+export class DetallesClienteSingleton implements OnInit {
+  item: Cliente;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private database: DatabaseService,
-    private alertController: AlertController,
-    private toastController: ToastController) { 
-      this.route.queryParams.subscribe((params) => {
-        this.item = {
-          nombre: params['nombre'] || '',
-          deuda: params['deuda'] ? +params['deuda'] : 0, // Convertir a número
-          extras: params['extras'] || '',
-        } as Cliente;
-      });
-      
+    private alertController: AlertController // Solo AlertController
+  ) { 
+    this.route.queryParams.subscribe((params) => {
+      this.item = {
+        nombre: params['nombre'] || '',
+        deuda: params['deuda'] ? +params['deuda'] : 0, // Convertir a número
+        extras: params['extras'] || '',
+      } as Cliente;
+    });
   }
 
   ngOnInit() {}
+
   async onActualizar() {
     try {
-      if (!this.item ) {
-        alert('Por favor, revisa los datos antes de actualizar.');
+      if (!this.item) {
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Por favor, revisa los datos antes de actualizar.',
+          buttons: ['OK']
+        });
+        await alert.present();
         return;
       }
-  
+
       console.log('Datos enviados para actualización:', this.item);
-  
+
       const resultado = await this.database.updateCliente(this.item);
-  
+
       if (resultado) {
-        alert('Cliente actualizada correctamente.');
+        const alert = await this.alertController.create({
+          header: 'Éxito',
+          message: 'Cliente actualizado correctamente.',
+          buttons: ['OK']
+        });
+        await alert.present();
         this.router.navigate(['/tabs/tab2']); // Redirigir después de confirmar
       } else {
-        alert('No se pudo actualizar cliente. Verifica los datos.');
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'No se pudo actualizar cliente. Verifica los datos.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     } catch (error) {
-      console.error('Error al intentar actualizar  cliente:', error);
-      alert('Hubo un error. Intenta más tarde.');
+      console.error('Error al intentar actualizar cliente:', error);
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Hubo un error. Intenta más tarde.',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
   async onEliminar() {
     if (!this.item) return;
-  
-    // Mostrar confirmación antes de eliminar
-    const confirmar = confirm(
-      `¿Estás seguro de que deseas eliminar cliente ${this.item.nombre}?`
-    );
-  
-    if (!confirmar) {
-      console.log('Eliminación cancelada por el usuario.');
-      return; // Si el usuario cancela, no se realiza ninguna acción
-    }
 
-  
-      // Eliminar la mesa
-      const resultado = await this.database.deleteCliente(this.item.nombre, this.item.deuda, this.item.extras);
-      
-      if(resultado){
-        alert('Cliente eliminado.');
-        this.router.navigate(['/tabs/tab2']);
-      }
-    } 
+    const alert = await this.alertController.create({
+      header: 'Confirmación',
+      message: `¿Estás seguro de que deseas eliminar cliente ${this.item.nombre}?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Eliminación cancelada por el usuario.');
+          }
+        },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            // Eliminar la mesa
+            const resultado = await this.database.deleteCliente(this.item.nombre, this.item.deuda, this.item.extras);
+
+            if (resultado) {
+              const alert = await this.alertController.create({
+                header: 'Éxito',
+                message: 'Cliente eliminado.',
+                buttons: ['OK']
+              });
+              await alert.present();
+              this.router.navigate(['/tabs/tab2']);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 }
-
-  

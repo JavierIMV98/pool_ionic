@@ -50,7 +50,12 @@ export class DetallesMesaComponent implements OnInit {
   async onActualizar() {
     try {
       if (!this.item || !this.item.numero || !this.item.inicio || this.item.precio <= 0) {
-        alert('Por favor, revisa los datos antes de actualizar.');
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Por favor, revisa los datos antes de actualizar.',
+          buttons: ['OK'],
+        });
+        await alert.present(); // Alerta en lugar de alert()
         return;
       }
   
@@ -59,14 +64,29 @@ export class DetallesMesaComponent implements OnInit {
       const resultado = await this.database.updateMesa(this.item);
   
       if (resultado) {
-        alert('Mesa actualizada correctamente.');
+        const alert = await this.alertController.create({
+          header: 'Éxito',
+          message: 'Mesa actualizada correctamente.',
+          buttons: ['OK'],
+        });
+        await alert.present(); // Alerta en lugar de alert()
         this.router.navigate(['/tabs/tab1']); // Redirigir después de confirmar
       } else {
-        alert('No se pudo actualizar la mesa. Verifica los datos.');
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'No se pudo actualizar la mesa. Verifica los datos.',
+          buttons: ['OK'],
+        });
+        await alert.present(); // Alerta en lugar de alert()
       }
     } catch (error) {
       console.error('Error al intentar actualizar la mesa:', error);
-      alert('Hubo un error. Intenta más tarde.');
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Hubo un error. Intenta más tarde.',
+        buttons: ['OK'],
+      });
+      await alert.present(); // Alerta en lugar de alert()
     }
   }
   
@@ -76,68 +96,65 @@ export class DetallesMesaComponent implements OnInit {
   async onEliminar() {
     if (!this.item) return;
   
-    // Mostrar confirmación antes de eliminar
-    const confirmar = confirm(
-      `¿Estás seguro de que deseas eliminar la mesa número ${this.item.numero}?`
-    );
+    const confirmar = await this.alertController.create({
+      header: 'Confirmación',
+      message: `¿Estás seguro de que deseas eliminar la mesa número ${this.item.numero}?`,
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+        {
+          text: 'Sí',
+          handler: async () => {
+            try {
+              const ahora = new Date();
+              const horaFinal = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}`;
+              const inicio = this.item.inicio.split(':');
+              const horaInicio = new Date();
+              horaInicio.setHours(parseInt(inicio[0]), parseInt(inicio[1]), 0, 0);
   
-    if (!confirmar) {
-      console.log('Eliminación cancelada por el usuario.');
-      return; // Si el usuario cancela, no se realiza ninguna acción
-    }
+              if (horaInicio > ahora) {
+                ahora.setDate(ahora.getDate() + 1); // Avanzar un día para la hora actual
+              }
   
-    try {
-      const ahora = new Date(); // Hora actual
-      const horaFinal = `${ahora
-        .getHours()
-        .toString()
-        .padStart(2, '0')}:${ahora.getMinutes()
-        .toString()
-        .padStart(2, '0')}`; // Hora en formato HH:mm
+              const diferenciaMinutos = Math.floor((ahora.getTime() - horaInicio.getTime()) / 60000);
+              let total = diferenciaMinutos * this.item.precio;
+              if (diferenciaMinutos < 55) total = diferenciaMinutos;
   
-      // Calcular la diferencia en minutos
-      const inicio = this.item.inicio.split(':'); // Suponiendo que `inicio` está en formato HH:mm
-      const horaInicio = new Date();
-      horaInicio.setHours(parseInt(inicio[0]), parseInt(inicio[1]), 0, 0);
+              const registroHistorial = {
+                numero: this.item.numero,
+                inicio: this.item.inicio,
+                final: horaFinal,
+                total: total,
+              };
   
-      // Si la hora final es menor que la hora inicial, asumir que pertenece al día siguiente
-      if (horaInicio > ahora) {
-        ahora.setDate(ahora.getDate() + 1); // Avanzar un día para la hora actual
-      }
-  
-      const diferenciaMinutos = Math.floor(
-        (ahora.getTime() - horaInicio.getTime()) / 60000
-      );
-  
-      let total = diferenciaMinutos * this.item.precio; // Cálculo del total
-
-      // Validación del mínimo
-      if (diferenciaMinutos < 55) {
-        total = diferenciaMinutos;
-      }
-  
-      // Crear el registro del historial
-      const registroHistorial = {
-        numero: this.item.numero,
-        inicio: this.item.inicio,
-        final: horaFinal,
-        total: total,
-      };
-  
-      // Insertar el registro en el historial
-      await this.database.insertRegistro(registroHistorial);
-  
-      // Eliminar la mesa
-      const resultado = await this.database.deleteMesa(this.item.numero);
-      
-      if(resultado){
-        alert('Mesa eliminada y registrada en el historial correctamente.');
-        this.router.navigate(['/tabs/tab1']);
-      }
-    } catch (error) {
-      console.error('Error al eliminar la mesa:', error);
-      alert('Hubo un error al eliminar la mesa.');
-    }
+              await this.database.insertRegistro(registroHistorial);
+              const resultado = await this.database.deleteMesa(this.item.numero);
+              
+              if (resultado) {
+                const alert = await this.alertController.create({
+                  header: 'Éxito',
+                  message: 'Mesa eliminada y registrada en el historial correctamente.',
+                  buttons: ['OK'],
+                });
+                await alert.present(); // Alerta en lugar de alert()
+                this.router.navigate(['/tabs/tab1']);
+              }
+            } catch (error) {
+              console.error('Error al eliminar la mesa:', error);
+              const alert = await this.alertController.create({
+                header: 'Error',
+                message: 'Hubo un error al eliminar la mesa.',
+                buttons: ['OK'],
+              });
+              await alert.present(); // Alerta en lugar de alert()
+            }
+          },
+        },
+      ],
+    });
+    await confirmar.present(); // Confirmación en lugar de confirm()
   }
   
 private calcularTotal(){

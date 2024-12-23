@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">pool_ionic_1</string>
-    <string name="title_activity_main">pool_ionic_1</string>
+    <string name="app_name">App Pool</string>
+    <string name="title_activity_main">App Pool</string>
     <string name="package_name">io.ionic.starter</string>
     <string name="custom_url_scheme">io.ionic.starter</string>
 </resources>
